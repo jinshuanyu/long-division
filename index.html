@@ -49,7 +49,7 @@
   details.intro ul{margin:.2rem 0 .9rem;padding-left:1.3rem}
   details.intro li{margin:.2rem 0}
   .lvtable{border-collapse:collapse;margin:.4rem 0 .9rem;font-size:.92rem;background:#fff}
-  .lvtable th,.lvtable td{border:1px solid var(--c-border);padding:.3rem .8rem;text-align:left}
+  .lvtable th,.lvtable td{border:1px solid var(--c-border);padding:.3rem .8rem;text-align:left;white-space:nowrap}
   .lvtable th{background:var(--c-soft)}
 
   /* ---- 級數選單 ---- */
@@ -234,7 +234,7 @@
     <details class="intro" id="intro">
       <summary>📖 怎麼玩？給大人的小提醒</summary>
       <table class="lvtable">
-        <thead><tr><th>級數</th><th>題型</th><th>題號</th></tr></thead>
+        <thead><tr><th>級數</th><th>題型</th></tr></thead>
         <tbody id="lvTable"></tbody>
       </table>
       <p><b>怎麼寫：</b>被除數和除數都看得到，□ 裡要填的是計算過程中的數字（商、乘出來的數、相減後的數）。</p>
@@ -657,7 +657,7 @@ function randomSet(lv){
    ============================================================ */
 function renderLevelTable(){
   $("lvTable").innerHTML = LEVELS.map(lv =>
-    `<tr><td>第 ${lv.no} 級</td><td>${lv.name}</td><td>第 ${lv.probs[0].no}–${lv.probs[4].no} 題</td></tr>`).join("");
+    `<tr><td>第 ${lv.no} 級</td><td>${lv.name}</td></tr>`).join("");
 }
 function renderLevels(){
   $("levels").innerHTML = LEVELS.map(lv => {
