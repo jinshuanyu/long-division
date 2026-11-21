@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>直式除法挖洞題｜媽媽好忙。媽媽好嗎？</title>
+<meta name="description" content="從兩位數 ÷ 一位數到四位數 ÷ 三位數，6 級 30 題直式除法挖洞題。填出商、乘出來的數和相減後的數，附一步一步的詳解，可列印學習單。" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>➗</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Iansui&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --c-primary:#2f7fd1; --c-primary-deep:#1d5fa8; --c-soft:#e6f0fb; --c-tint:#f4f8fd;
+    --c-text:#1f2937; --c-muted:#64748b; --c-bg:#eef3fa; --c-border:#dbe5f1;
+    --ok:#16a34a; --ok-soft:#dcfce7; --bad:#dc2626; --bad-soft:#fee2e2; --ans:#d92d2d;
+    --src:#fde68a; --new:#cfe3fb;
+    --cell:2.35rem;
+    --num:"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans TC",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;overflow-x:hidden}
+  body{font-family:"Iansui","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.6;font-size:17px;padding:1.2rem 0 2rem}
+  button{font-family:inherit}
+  .container{max-width:1000px;margin:0 auto;background:#fff;border-radius:20px;box-shadow:0 10px 30px rgba(29,95,168,.10);overflow:hidden}
+  .inner{padding:1.4rem 1.6rem 2rem}
+
+  /* ---- 標題區 ---- */
+  .hero{position:relative;padding:2.6rem 1.6rem 2rem;text-align:center;color:#fff;
+    background:linear-gradient(135deg,#1f6bbd 0%,#2f7fd1 55%,#73b1ef 100%);overflow:hidden}
+  .hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.09)}
+  .hero::before{width:260px;height:260px;right:-80px;top:-120px}
+  .hero::after{width:180px;height:180px;left:-60px;bottom:-100px}
+  .hero > *{position:relative}
+  .eyebrow{display:inline-block;font-size:.9rem;font-weight:700;letter-spacing:.12em;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:.2rem 1rem;margin-bottom:.8rem}
+  .hero h1{font-size:2.1rem;font-weight:900;line-height:1.3;margin:0 0 .3rem;letter-spacing:.04em}
+  .hero .lead{color:rgba(255,255,255,.92);margin:.5rem auto 0;font-size:1rem;max-width:34em}
+  .hero-back{position:absolute;left:1rem;top:.9rem;color:rgba(255,255,255,.95);font-size:.85rem;font-weight:700;text-decoration:none;background:rgba(0,0,0,.14);padding:.2rem .75rem;border-radius:999px}
+  .hero-back:hover{background:rgba(0,0,0,.24)}
+
+  /* ---- 說明 ---- */
+  details.intro{border:1.5px solid var(--c-border);border-radius:16px;background:var(--c-tint);padding:.2rem 1.1rem}
+  details.intro summary{cursor:pointer;font-weight:900;padding:.6rem 0;color:var(--c-primary-deep);list-style:none}
+  details.intro summary::-webkit-details-marker{display:none}
+  details.intro summary::before{content:"▸ ";display:inline-block;transition:transform .15s}
+  details.intro[open] summary::before{transform:rotate(90deg)}
+  details.intro p{margin:.3rem 0 .7rem}
+  details.intro ul{margin:.2rem 0 .9rem;padding-left:1.3rem}
+  details.intro li{margin:.2rem 0}
+  .lvtable{border-collapse:collapse;margin:.4rem 0 .9rem;font-size:.92rem;background:#fff}
+  .lvtable th,.lvtable td{border:1px solid var(--c-border);padding:.3rem .8rem;text-align:left}
+  .lvtable th{background:var(--c-soft)}
+
+  /* ---- 級數選單 ---- */
+  .levels{display:grid;grid-template-columns:repeat(6,1fr);gap:.6rem;margin:1.2rem 0 1.1rem}
+  .lv{border:2px solid var(--c-border);background:#fff;border-radius:14px;padding:.55rem .3rem .5rem;cursor:pointer;color:inherit;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.05rem;transition:border-color .15s,transform .1s}
+  .lv:hover{border-color:var(--c-primary);transform:translateY(-2px)}
+  .lv b{font-size:1.05rem;font-weight:900}
+  .lv small{font-size:.78rem;color:var(--c-muted);line-height:1.35;font-family:var(--num)}
+  .lv .prog{font-size:.75rem;font-weight:700;color:#b45309;min-height:1.2em}
+  .lv.on{background:linear-gradient(145deg,#2f7fd1,#73b1ef);color:#fff;border-color:transparent;box-shadow:0 8px 18px -8px #2f7fd1}
+  .lv.on small{color:rgba(255,255,255,.92)}
+  .lv.on .prog{color:#fff7c2}
+
+  /* ---- 級數頁 ---- */
+  .lvhead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.6rem;border-bottom:2.5px solid #334155;padding-bottom:.45rem;margin-bottom:.7rem}
+  .lvhead h2{margin:0;font-size:1.55rem;font-weight:900}
+  .lvhead h2 small{font-size:.95rem;font-weight:700;color:var(--c-muted);margin-left:.5rem;font-family:var(--num)}
+  .score{font-weight:900;color:var(--c-primary-deep);background:var(--c-soft);border-radius:999px;padding:.15rem .9rem}
+  .toolbar{display:flex;flex-wrap:wrap;gap:.5rem;margin:.2rem 0 .7rem}
+  .tb{border:2px solid var(--c-border);background:#fff;border-radius:999px;padding:.3rem .9rem;font-weight:700;font-size:.92rem;color:#334155;cursor:pointer;transition:all .15s}
+  .tb:hover{border-color:var(--c-primary);color:var(--c-primary-deep)}
+  .tb.main{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
+  .tb.main:hover{background:var(--c-primary-deep);color:#fff}
+  .hint{margin:0 0 .8rem;color:#475569;font-size:.95rem}
+  .setnote{display:inline-block;font-size:.8rem;font-weight:700;color:#7c3aed;background:#f3e8ff;border-radius:999px;padding:.05rem .65rem;margin-left:.4rem;vertical-align:middle}
+
+  .probs{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:1rem}
+  .prob{border:1.5px solid #cbd5e1;border-radius:16px;padding:.7rem .9rem .8rem;display:flex;flex-direction:column;background:#fff;transition:border-color .2s,box-shadow .2s}
+  .prob.solved{border-color:var(--ok);box-shadow:0 0 0 3px var(--ok-soft)}
+  .prob header{display:flex;align-items:baseline;gap:.45rem}
+  .prob .no{font-weight:900;font-family:var(--num)}
+  .prob .eq{color:var(--c-muted);font-family:var(--num)}
+  .prob .star{margin-left:auto;font-size:1.1rem}
+  .gridwrap{display:flex;justify-content:center;overflow-x:auto;padding:.2rem 0 .3rem;flex:1}
+  .msg{min-height:1.5em;margin:.2rem 0 .5rem;font-size:.92rem;text-align:center;font-weight:700}
+  .msg.warn{color:#b45309} .msg.bad{color:var(--bad)} .msg.good{color:var(--ok)}
+  .actions{display:flex;gap:.5rem;justify-content:center}
+  .btn{border:0;border-radius:999px;padding:.4rem 1.1rem;font-weight:900;font-size:.95rem;cursor:pointer;transition:transform .1s,filter .15s}
+  .btn:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  .btn.check{background:var(--c-primary);color:#fff}
+  .btn.detail{background:#fef3c7;color:#92400e}
+  .btn.reset{background:#f1f5f9;color:#475569}
+
+  .tipcard{border:1.5px dashed #94a3b8;border-radius:16px;padding:.8rem 1rem;background:#f8fafc}
+  .tipcard h3{margin:0 0 .4rem;font-size:1.05rem}
+  .tipcard p{margin:0;font-size:.95rem;line-height:1.75}
+
+  /* ---- 直式 ---- */
+  .ld{display:inline-grid;grid-auto-rows:var(--cell);align-items:center;font-family:var(--num);font-size:1.38rem;line-height:1;column-gap:0;font-variant-numeric:tabular-nums}
+  .ld .c{width:var(--cell);height:var(--cell);display:flex;align-items:center;justify-content:center;border-radius:6px;transition:background-color .2s}
+  .ld .dv{justify-self:end;padding-right:.55rem;height:var(--cell);display:flex;align-items:center;border-radius:6px}
+  .ld .dd{border-top:2.5px solid #334155;border-radius:0}
+  .ld .dd.first{border-left:2.5px solid #334155}
+  .ld .pr{border-bottom:2px solid #334155;border-radius:0}
+  .ld .src{background:var(--src)}
+  .ld .new{background:var(--new)}
+  .box{width:calc(var(--cell) - 6px);height:calc(var(--cell) - 6px);border:2px solid #94a3b8;border-radius:8px;text-align:center;font:inherit;padding:0;margin:0;background:#fff;color:var(--c-text);display:inline-flex;align-items:center;justify-content:center;-moz-appearance:textfield;appearance:none}
+  input.box{caret-color:var(--c-primary)}
+  input.box:focus{outline:none;border-color:var(--c-primary);box-shadow:0 0 0 3px rgba(47,127,209,.28)}
+  .box.ok{border-color:var(--ok);background:var(--ok-soft);color:#166534}
+  .box.bad{border-color:var(--bad);background:var(--bad-soft);color:#991b1b;animation:shake .35s}
+  .box.ans{color:var(--ans);font-weight:700;border-color:#94a3b8}
+  .box.ask{animation:ask 1s ease-in-out infinite;border-color:#f59e0b}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+  @keyframes ask{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.0)}50%{box-shadow:0 0 0 5px rgba(245,158,11,.45)}}
+
+  /* ---- 詳解視窗 ---- */
+  dialog#dlg{border:0;border-radius:18px;padding:0;width:min(900px,94vw);max-height:92vh;color:var(--c-text);box-shadow:0 20px 50px rgba(15,23,42,.3);font-family:inherit}
+  dialog#dlg[open]{display:flex;flex-direction:column}
+  dialog#dlg::backdrop{background:rgba(15,23,42,.5)}
+  .dlg-head{display:flex;align-items:center;gap:.6rem;padding:.8rem 1.1rem;border-bottom:1.5px solid var(--c-border);background:var(--c-tint)}
+  .dlg-head h3{margin:0;font-size:1.2rem;font-weight:900}
+  .dlg-head h3 span{font-family:var(--num);color:var(--c-muted);font-weight:600;margin-left:.4rem}
+  .dlg-x{margin-left:auto;border:0;background:#e2e8f0;width:2.1rem;height:2.1rem;border-radius:50%;font-size:1.05rem;cursor:pointer;color:#334155}
+  .dlg-body{display:grid;grid-template-columns:auto 1fr;gap:1.2rem;padding:1rem 1.1rem;overflow:auto;flex:1;min-height:0}
+  .dlg-grid{display:flex;flex-direction:column;align-items:center;gap:.5rem}
+  .legend{font-size:.8rem;color:var(--c-muted);display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center}
+  .legend i{display:inline-block;width:.9em;height:.9em;border-radius:3px;vertical-align:-.1em;margin-right:.2em}
+  ol.steps{margin:0;padding:0;list-style:none;counter-reset:st}
+  ol.steps li{position:relative;padding:.5rem .8rem .5rem 2.3rem;border-radius:12px;margin-bottom:.45rem;color:#334155;font-size:.98rem;line-height:1.75;border:1.5px solid transparent}
+  ol.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:.6rem;top:.6rem;width:1.3rem;height:1.3rem;border-radius:50%;background:#e2e8f0;color:#475569;font-size:.78rem;font-weight:900;display:grid;place-items:center;font-family:var(--num)}
+  ol.steps li.cur{background:#eff6ff;border-color:#bfdbfe;color:var(--c-text)}
+  ol.steps li.cur::before{background:var(--c-primary);color:#fff}
+  ol.steps li.later{display:none}
+  .n{font-family:var(--num)}
+  .answer{border-top:1.5px dashed var(--c-border);padding-top:.6rem;margin-top:.3rem;line-height:1.9}
+  .answer b{font-size:1.05rem}
+  .dlg-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.5rem;padding:.7rem 1rem;border-top:1.5px solid var(--c-border);background:#fff}
+  .dlg-foot .stepno{font-weight:900;color:var(--c-muted);min-width:4.5em;text-align:center;font-family:var(--num)}
+  .btn:disabled{opacity:.4;cursor:default;transform:none;filter:none}
+  .btn.nav{background:var(--c-primary);color:#fff}
+  .btn.all{background:#f1f5f9;color:#475569}
+
+  /* ---- footer：與其他工具相同結構 ---- */
+  .note{margin:1.6rem 0 0;padding:.8rem 1.1rem;background:var(--c-tint);border-radius:12px;font-size:.88rem;color:#475569;border:1px solid var(--c-border)}
+  footer.credits{margin-top:1.6rem;padding-top:1.2rem;border-top:2px solid var(--c-border);text-align:center;font-size:.875rem;color:#475569;line-height:1.6}
+  .credits .brand{font-weight:900;color:var(--c-primary-deep);margin-bottom:.3rem}
+  .credits .contact a{color:#64748b;margin:0 .5rem;text-decoration:none;transition:color .2s}
+  .credits .contact a:hover{color:var(--c-primary-deep)}
+  .support-cta{margin:1rem 0}
+  .support-btn{display:inline-block;background:linear-gradient(to right,#facc15,#fb923c);color:#fff;font-weight:600;font-size:1rem;padding:.5rem 1.25rem;border-radius:9999px;box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06);text-decoration:none;transition:transform .2s ease}
+  .support-btn:hover{transform:scale(1.05)}
+  .more{margin:.4rem 0 1rem}
+  .more .lbl{font-size:.95rem;color:#888;margin-bottom:.4rem}
+  .more .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+  .more a{display:inline-block;padding:6px 14px;background:#dbeafe;color:#1d4ed8;text-decoration:none;border-radius:20px;font-size:1rem}
+  .more a:hover{background:#bfdbfe}
+  [hidden]{display:none!important}
+
+  @media (max-width:760px){
+    .levels{grid-template-columns:repeat(3,1fr)}
+    .dlg-body{grid-template-columns:1fr;gap:.6rem}
+    .dlg-grid{position:sticky;top:-1rem;background:#fff;z-index:2;padding:.4rem 0 .5rem;margin:-1rem 0 0;border-bottom:1.5px solid var(--c-border)}
+  }
+  @media (max-width:640px){
+    body{padding:0}
+    .container{border-radius:0;box-shadow:none}
+    .inner{padding:1.1rem 16px 2rem}
+    .hero{padding:2.6rem 16px 1.6rem}
+    .hero h1{font-size:1.65rem}
+    .probs{grid-template-columns:1fr}
+    :root{--cell:2.5rem}
+    .lvhead h2{font-size:1.3rem}
+    dialog#dlg{width:100vw;max-width:100vw;max-height:94vh;border-radius:18px 18px 0 0;margin:auto 0 0}
+    dialog#dlg .ld{--cell:1.85rem;font-size:1.1rem}
+    dialog#dlg .legend{font-size:.72rem;gap:.5rem}
+    .dlg-head{padding:.6rem 16px}
+    .dlg-head h3{font-size:1.05rem}
+    .dlg-body{padding:1rem 16px}
+    ol.steps li{font-size:.93rem;padding:.4rem .6rem .4rem 2.1rem}
+    .dlg-foot{flex-wrap:nowrap;gap:.35rem;padding:.6rem 10px}
+    .dlg-foot .btn{padding:.4rem .75rem;font-size:.88rem;white-space:nowrap}
+    .dlg-foot .stepno{min-width:3em}
+  }
+
+  /* ---- 列印 ---- */
+  #printArea{display:none}
+  @media print{
+    @page{size:A4;margin:12mm}
+    :root{--cell:8mm}
+    html,body{background:#fff;padding:0;margin:0;font-size:11pt;overflow:visible}
+    body > *:not(#printArea){display:none!important}
+    #printArea{display:block}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .pp{break-after:page;page-break-after:always}
+    .pp:last-child{break-after:auto;page-break-after:auto}
+    .ph{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #334155;padding-bottom:2mm;margin-bottom:2mm}
+    .ph h1{margin:0;font-size:17pt;font-weight:900}
+    .ph h1 small{font-size:10.5pt;color:#64748b;font-weight:600;margin-left:2mm}
+    .ph .fill{font-size:10.5pt}
+    .pinst{margin:0 0 3mm;font-size:10pt}
+    .pgrid{display:grid;gap:4mm}
+    .pcard{border:1px solid #9ca3af;border-radius:3mm;padding:2.5mm 3mm;break-inside:avoid}
+    .pcard .t{font-size:10pt;color:#475569;font-family:var(--num)}
+    .pcard .t b{color:#111}
+    .pcard .gridwrap{padding:1mm 0}
+    .ptip{border:1px dashed #9ca3af;border-radius:3mm;padding:3mm;background:#fafafa}
+    .ptip h3{margin:0 0 1.5mm;font-size:11pt}
+    .ptip p{margin:0;font-size:9.5pt;line-height:1.7}
+    .ld{font-size:13pt}
+    .box{border-width:1.2px;border-radius:1.6mm}
+    .pd{display:grid;grid-template-columns:62mm 1fr;gap:4mm;border-bottom:1px solid #d1d5db;padding:3mm 0;break-inside:avoid}
+    .pd .t{font-size:10pt;color:#475569;font-family:var(--num)}
+    .pd .t b{color:#111}
+    .pd ol{margin:0;padding-left:5mm;font-size:9.5pt;line-height:1.65}
+    .pd ol li{margin-bottom:1mm}
+    .pd .answer{font-size:9.5pt;border:0;padding:1mm 0 0;margin:0;line-height:1.7}
+    .pfoot{margin-top:3mm;font-size:8.5pt;color:#94a3b8;text-align:right}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="hero">
+    <a class="hero-back" href="https://jinshuanyu.github.io/">← 全部工具</a>
+    <span class="eyebrow">媽媽好忙。媽媽好嗎？</span>
+    <h1>直式除法挖洞題</h1>
+    <p class="lead">從兩位數 ÷ 一位數，一路進階到四位數 ÷ 三位數，共 6 級 30 題</p>
+  </header>
+
+  <div class="inner">
+    <details class="intro" id="intro">
+      <summary>📖 怎麼玩？給大人的小提醒</summary>
+      <table class="lvtable">
+        <thead><tr><th>級數</th><th>題型</th><th>題號</th></tr></thead>
+        <tbody id="lvTable"></tbody>
+      </table>
+      <p><b>怎麼寫：</b>被除數和除數都看得到，□ 裡要填的是計算過程中的數字（商、乘出來的數、相減後的數）。</p>
+      <p><b>為什麼這樣練：</b>直接算答案時，孩子常常只是照步驟走；挖掉過程中的數字，他得想清楚「這個數是怎麼來的」——是除出來的商？是除數 × 商？還是相減後再拉下來的？每一格都在檢查一個觀念。</p>
+      <p><b>給大人的小提醒：</b></p>
+      <ul>
+        <li>寫完請孩子說說看某一格「為什麼是這個數」，說得出來才是真的懂。全對的時候，工具會挑一格閃黃光，就從那一格開始問。</li>
+        <li>每一級最後一格有「這一級的重點」，可以先一起讀再寫。</li>
+        <li>每題都有「看詳解」，一步一步播：講到哪一步，直式上的數字就亮在哪裡。第 4 級開始有「估商」的試算過程。</li>
+        <li>想多練？按「🎲 換一組新題目」，同一級會自動出新的 5 題，詳解也會跟著產生。</li>
+        <li>喜歡寫紙本的話，可以印學習單和詳解。</li>
+      </ul>
+    </details>
+
+    <nav class="levels" id="levels" aria-label="選擇級數"></nav>
+
+    <section id="levelView">
+      <div class="lvhead">
+        <h2 id="lvTitle"></h2>
+        <span class="score" id="score"></span>
+      </div>
+      <div class="toolbar">
+        <button class="tb main" type="button" id="btnNew">🎲 換一組新題目</button>
+        <button class="tb" type="button" id="btnOrig" hidden>📘 回到原本的題目</button>
+        <button class="tb" type="button" id="btnPrintWs">🖨️ 列印學習單</button>
+        <button class="tb" type="button" id="btnPrintAns">🖨️ 列印詳解</button>
+        <button class="tb" type="button" id="btnClear">🧹 全部清空</button>
+      </div>
+      <p class="hint">在 □ 裡填入正確的數字，填完按「檢查」。手機上點一下格子就會跳出數字鍵盤，填好會自動跳到下一格。</p>
+      <div class="probs" id="probs"></div>
+    </section>
+
+    <div class="note">💡 有建議或發現問題，歡迎寫信或到粉專「媽媽好忙。媽媽好嗎？」留言告訴我。</div>
+
+    <footer class="credits">
+      <div class="more">
+        <div class="lbl">➗ 更多數學工具：</div>
+        <div class="chips">
+          <a href="https://jinshuanyu.github.io/">🧰 全部工具</a>
+          <a href="https://jinshuanyu.github.io/add-and-subtract/">加減法</a>
+          <a href="https://jinshuanyu.github.io/subtraction-borrowing/">減法借位</a>
+          <a href="https://jinshuanyu.github.io/times-table/">乘法練習</a>
+          <a href="https://jinshuanyu.github.io/christmas-tree-multiples/">聖誕樹乘法</a>
+          <a href="https://jinshuanyu.github.io/spacewalk/">太空漫步</a>
+        </div>
+      </div>
+      <div class="brand">媽媽好忙。媽媽好嗎？</div>
+      <div class="contact">
+        <a href="mailto:mamahowma@gmail.com" aria-label="Email mamahowma"><i class="fa-solid fa-envelope fa-xl fa-fw" aria-hidden="true"></i></a>
+        <a href="https://www.facebook.com/mamahowma" target="_blank" rel="noopener noreferrer" aria-label="mamahowma Facebook Page"><i class="fa-brands fa-facebook fa-xl fa-fw" aria-hidden="true"></i></a>
+        <a href="https://www.youtube.com/@mamahowma" target="_blank" rel="noopener noreferrer" aria-label="mamahowma YouTube"><i class="fa-brands fa-youtube fa-xl fa-fw" aria-hidden="true"></i></a>
+        <a href="https://portaly.cc/mamahowma" target="_blank" rel="noopener noreferrer" aria-label="mamahowma Portaly"><i class="fa-solid fa-link fa-xl fa-fw" aria-hidden="true"></i></a>
+        <a href="https://portaly.cc/mamahowma/support" target="_blank" rel="noopener noreferrer" aria-label="Support mamahowma"><i class="fa-solid fa-mug-hot fa-xl fa-fw" aria-hidden="true"></i></a>
+      </div>
+      <div class="support-cta">
+        <a href="https://portaly.cc/mamahowma/support" target="_blank" rel="noopener noreferrer" class="support-btn">喜歡這個免費工具嗎？☕ 請杯咖啡鼓勵我</a>
+      </div>
+      © 2026 Christina Yu. All rights reserved.
+    </footer>
+  </div>
+</div>
+
+<dialog id="dlg" aria-labelledby="dlgTitle">
+  <div class="dlg-head">
+    <h3 id="dlgTitle"></h3>
+    <button class="dlg-x" type="button" id="dlgX" aria-label="關閉">✕</button>
+  </div>
+  <div class="dlg-body">
+    <div class="dlg-grid">
+      <div id="dlgGrid"></div>
+      <div class="legend"><span><i style="background:var(--src)"></i>正在算的數</span><span><i style="background:var(--new)"></i>這一步寫下的數</span><span><b style="color:var(--ans)">紅字</b>＝□ 的答案</span></div>
+    </div>
+    <div>
+      <ol class="steps" id="dlgSteps"></ol>
+      <div class="answer" id="dlgAns" hidden></div>
+    </div>
+  </div>
+  <div class="dlg-foot">
+    <button class="btn nav" type="button" id="dlgPrev">◀ 上一步</button>
+    <span class="stepno" id="dlgNo"></span>
+    <button class="btn nav" type="button" id="dlgNext">下一步 ▶</button>
+    <button class="btn all" type="button" id="dlgAll">全部顯示</button>
+  </div>
+</dialog>
+
+<div id="printArea"></div>
+
+<script>
+/* ============================================================
+   題庫：PDF 原本的 30 題
+   q：商的挖洞樣式；r：直式往下每一列（乘出來的數、相減後的數輪流）
+   「?」＝挖洞（要填），「.」＝直接顯示
+   ============================================================ */
+const LEVELS = [
+  { no:1, name:"兩位數 ÷ 一位數", dvd:[10,99],     dvs:[2,9],
+    tip:"每一輪都做四件事：<b>除 → 乘 → 減 → 拉</b>。<br>最高位不夠除，就把前兩位一起看，商從個位開始寫。",
+    probs:[
+      { no:1, a:84, b:4, q:"??", r:["?",".",".","."] },
+      { no:2, a:75, b:5, q:"?.", r:[".","?.",".?","."] },
+      { no:3, a:92, b:7, q:".?", r:["?","?.","..","."] },
+      { no:4, a:56, b:8, q:"?",  r:["??","."] },
+      { no:5, a:97, b:6, q:".?", r:["?",".?","..","."] } ] },
+  { no:2, name:"三位數 ÷ 一位數", dvd:[100,999],   dvs:[2,9],
+    tip:"拉下來的數<b>比除數小、不夠除</b>時，那一位的商要<b>補 0</b>，再拉下一位。<br>這是最常忘記的地方！",
+    probs:[
+      { no:6,  a:368, b:4, q:"??",  r:["?.",".",".","."] },
+      { no:7,  a:735, b:5, q:"???", r:[".","..","??","..","..","."] },
+      { no:8,  a:618, b:3, q:"?.?", r:["?","..","?.","."] },
+      { no:9,  a:842, b:6, q:".?.", r:[".","..","??","?"] },
+      { no:10, a:953, b:7, q:"???", r:[".","..","..","?.","?.","."] } ] },
+  { no:3, name:"四位數 ÷ 一位數", dvd:[1000,9999], dvs:[2,9],
+    tip:"每次相減完，剩下的數<b>一定要比除數小</b>。<br>如果比除數大（或一樣），表示商估太小了，要再加 1。",
+    probs:[
+      { no:11, a:5172, b:4, q:"????", r:["?","?.",".","?.","?.","..","..","."] },
+      { no:12, a:3654, b:6, q:"?..",  r:[".?","..",".?","?"] },
+      { no:13, a:7085, b:5, q:"..?.", r:[".","..","??",".","?",".?","?.","?"] },
+      { no:14, a:4903, b:7, q:"??.",  r:["?.","."] },
+      { no:15, a:8326, b:9, q:"?..",  r:["..","?.","?.","..","??","?"] } ] },
+  { no:4, name:"三位數 ÷ 兩位數", dvd:[100,999],   dvs:[12,98],
+    tip:"估商：把除數看成整十數來試。<br>18 → 20（往上看），商容易<b>估太小</b>；<br>23 → 20（往下看），商容易<b>估太大</b>。<br>估完一定要試乘、調整。",
+    probs:[
+      { no:16, a:672, b:32, q:".?", r:["..","..","??","?"] },
+      { no:17, a:851, b:23, q:"??", r:["?.",".?.","?..","."] },
+      { no:18, a:538, b:67, q:"?",  r:["?.?","."] },
+      { no:19, a:945, b:18, q:".?", r:["?.","..",".?","?"] },
+      { no:20, a:816, b:27, q:"??", r:[".?","."] } ] },
+  { no:5, name:"四位數 ÷ 兩位數", dvd:[1000,9999], dvs:[12,98],
+    tip:"先看被除數的前兩位，不夠除就看前三位，<br>商的位置也要跟著往後移一格。",
+    probs:[
+      { no:21, a:3456, b:24, q:".?.", r:[".?",".??","..",".?","??","?"] },
+      { no:22, a:7392, b:56, q:"?..", r:["?.","??.","?..","...","???","?"] },
+      { no:23, a:5246, b:87, q:"??",  r:[".??",".."] },
+      { no:24, a:9135, b:43, q:"?.?", r:["??","??","..","?..","?.",".."] },
+      { no:25, a:6018, b:59, q:"??.", r:["..","?.?","..?","?"] } ] },
+  { no:6, name:"四位數 ÷ 三位數", dvd:[1000,9999], dvs:[102,989],
+    tip:"把除數看成整百數來試商（268 → 300、729 → 700）。<br>驗算：<b>除數 × 商 ＋ 餘數 ＝ 被除數</b>。",
+    probs:[
+      { no:26, a:2856, b:136, q:"??", r:[".?.","..?","?.?","."] },
+      { no:27, a:9476, b:412, q:"??", r:["..?","?...","?.?.","?"] },
+      { no:28, a:5831, b:729, q:"?",  r:["??..",".?."] },
+      { no:29, a:7650, b:245, q:".?", r:[".??","?..",".??",".."] },
+      { no:30, a:8749, b:268, q:"??", r:["???","..?",".?.","..."] } ] }
+];
+
+/* ============================================================
+   直式除法引擎
+   ============================================================ */
+const PLACE = ["個位","十位","百位","千位","萬位"];
+const CNUM = ["","一","兩","三","四","五"];
+
+/** 算出直式的每一步、每一列 */
+function solve(a, b){
+  const D = String(a), n = D.length;
+  let k = 1, cur = +D[0];
+  while (cur < b && k < n){ cur = cur * 10 + +D[k]; k++; }
+  const start = k - 1;
+  const qd = [];           // qd[col] = 該位的商
+  const steps = [];        // 每一輪「除乘減拉」
+  const rows = [];         // 直式往下的每一列 {val, col, kind:'p'|'r', step}
+  let col = start;
+  for (;;){
+    const q = Math.floor(cur / b), prod = q * b, rem = cur - prod;
+    const st = { col, cur, q, prod, rem, bring: [] };
+    qd[col] = q;
+    rows.push({ val: prod, col, kind: "p", step: steps.length });
+    let val = rem, c = col, next = null;
+    while (c < n - 1){
+      c++;
+      val = val * 10 + +D[c];
+      const br = { col: c, digit: +D[c], val, zero: false };
+      st.bring.push(br);
+      if (val >= b){ next = c; break; }
+      qd[c] = 0; br.zero = true;
+    }
+    rows.push({ val, col: c, kind: "r", step: steps.length });
+    steps.push(st);
+    if (next === null){ st.last = true; break; }
+    cur = val; col = next;
+  }
+  return { a, b, D, n, L: String(b).length, k, start, qd, steps, rows,
+           quotient: Math.floor(a / b), remainder: a % b };
+}
+
+/** 建立一題：所有格子＋挖洞 */
+function buildModel(a, b, qMask, rMask){
+  const s = solve(a, b);
+  const cells = [];
+  const stepOfCol = {};
+  s.steps.forEach((st, i) => {
+    stepOfCol[st.col] = { step: i + 1, sub: 0 };
+    st.bring.forEach(br => { if (br.zero) stepOfCol[br.col] = { step: i + 1, sub: 2 }; });
+  });
+  for (let c = s.start; c < s.n; c++){
+    cells.push({ key: "q" + c, row: 0, col: c, digit: s.qd[c], step: stepOfCol[c].step, sub: stepOfCol[c].sub });
+  }
+  s.rows.forEach((r, ri) => {
+    const str = String(r.val);
+    for (let j = 0; j < str.length; j++){
+      const col = r.col - str.length + 1 + j;
+      cells.push({ key: `w${ri}_${col}`, row: ri + 1, col, digit: +str[j], step: r.step + 1, sub: r.kind === "p" ? 1 : 3, prod: r.kind === "p" });
+    }
+  });
+  // 挖洞
+  if (qMask && rMask && applyMask(s, cells, qMask, rMask)){ /* 用題庫的挖法 */ }
+  else autoMask(cells);
+  const blanks = cells.filter(c => c.blank)
+    .sort((x, y) => x.step - y.step || x.sub - y.sub || x.row - y.row || x.col - y.col);
+  return { s, cells, blanks };
+}
+
+function applyMask(s, cells, qMask, rMask){
+  const qCells = cells.filter(c => c.row === 0);
+  if (qMask.length !== qCells.length || rMask.length !== s.rows.length){ console.warn("題庫格式不符", s.a, s.b); return false; }
+  qCells.forEach((c, i) => c.blank = qMask[i] === "?");
+  for (let ri = 0; ri < s.rows.length; ri++){
+    const rc = cells.filter(c => c.row === ri + 1);
+    if (rc.length !== rMask[ri].length){ console.warn("題庫格式不符", s.a, s.b, ri); cells.forEach(c => c.blank = false); return false; }
+    rc.forEach((c, i) => c.blank = rMask[ri][i] === "?");
+  }
+  return true;
+}
+
+/** 新題目：自動挖洞（約 35%～55% 的格子，商至少挖一格） */
+function autoMask(cells){
+  cells.forEach(c => c.blank = false);
+  const total = cells.length;
+  let k = Math.round(total * (0.35 + Math.random() * 0.2));
+  k = Math.max(2, Math.min(k, total - 1));
+  const idx = shuffle(cells.map((_, i) => i));
+  idx.slice(0, k).forEach(i => cells[i].blank = true);
+  if (!cells.some(c => c.row === 0 && c.blank)){
+    const qs = cells.filter(c => c.row === 0);
+    qs[Math.floor(Math.random() * qs.length)].blank = true;
+  }
+}
+
+/* ---------- 詳解文字 ---------- */
+const N = x => `<span class="n">${x}</span>`;
+function roundDivisor(b, L){
+  const u = Math.pow(10, L - 1);
+  return Math.round(b / u) * u;
+}
+function explain(s){
+  const { D, b, L, k, start } = s;
+  const pl = c => PLACE[s.n - 1 - c];
+  const chunk = +D.slice(0, k);
+  const out = [];
+  // 第一步：從哪裡開始
+  if (L === 1){
+    out.push(k === 1
+      ? `從最高位開始：${N(D[0] + " ÷ " + b)}，夠除，商從${pl(start)}開始寫。`
+      : `從最高位開始：${N(D[0])} 比 ${N(b)} 小，不夠除，所以看前兩位 ${N(chunk)}，商從${pl(start)}開始寫（寫在 ${N(D[start])} 的正上方）。`);
+  } else {
+    const first = +D.slice(0, L);
+    out.push(k === L
+      ? `先看被除數的前${CNUM[L]}位 ${N(first)}，${first > b ? `比 ${N(b)} 大` : `和 ${N(b)} 一樣大`}，夠除。商從${pl(start)}開始寫（寫在 ${N(D[start])} 的正上方）。`
+      : `先看前${CNUM[L]}位 ${N(first)}，比 ${N(b)} 小，不夠除，所以看前${CNUM[L + 1]}位 ${N(chunk)}。商從${pl(start)}開始寫（寫在 ${N(D[start])} 的正上方）。`);
+  }
+  // 每一輪
+  s.steps.forEach(st => {
+    const { cur, q, prod, rem } = st;
+    let A = `<b>${N(cur + " ÷ " + b)}</b>：`;
+    if (L === 1){
+      A += q < 9
+        ? `想 ${N(b)} 的乘法：${N(`${b} × ${q} = ${b * q}`)}，${N(`${b} × ${q + 1} = ${b * (q + 1)}`)} 就超過 ${N(cur)} 了，所以商 ${N(q)}。`
+        : `想 ${N(b)} 的乘法：${N(`${b} × 9 = ${b * 9}`)}，所以商 ${N(9)}。`;
+    } else {
+      const R = roundDivisor(b, L);
+      const e0 = Math.floor(cur / R);
+      let t = e0;
+      A += `把 ${N(b)} 看成 ${N(R)}，${N(cur + " ÷ " + R)} `;
+      if (e0 > 9){ A += `大約是 ${N(e0)}，但每一位的商最多只能是 9，先試 9。`; t = 9; }
+      else if (e0 < 1){ A += `不到 1，但 ${N(cur)} 已經夠除，先試 1。`; t = 1; }
+      else A += `大約是 ${N(e0)}。`;
+      for (let guard = 0; guard < 12; guard++){
+        const p = b * t;
+        if (p > cur){ A += `試 ${N(`${b} × ${t} = ${p}`)}，比 ${N(cur)} 大，太大了 → 改成 ${N(t - 1)}。`; t--; continue; }
+        const r = cur - p;
+        if (r >= b){ A += `試 ${N(`${b} × ${t} = ${p}`)}，${N(`${cur} − ${p} = ${r}`)}，沒有比 ${N(b)} 小，表示還能再分，太小了 → 改成 ${N(t + 1)}。`; t++; continue; }
+        A += `試 ${N(`${b} × ${t} = ${p}`)}，${N(`${cur} − ${p} = ${r}`)}，比 ${N(b)} 小 ✔`;
+        break;
+      }
+    }
+    const B = `商 <b>${N(q)}</b> 寫在${pl(st.col)}上面；${N(`${b} × ${q} = ${prod}`)} 寫在 ${N(cur)} 下面；相減 ${N(`${cur} − ${prod} = ${rem}`)}。`;
+    let C = "";
+    if (!st.bring.length){
+      C = rem === 0
+        ? `已經沒有數字可以拉下來了，剛好除盡，沒有餘數。`
+        : `已經沒有數字可以拉下來了，最後剩下的 ${N(rem)} 比 ${N(b)} 小，就是<b>餘數</b>。`;
+    } else {
+      const f = st.bring[0];
+      C = `把${pl(f.col)}的 ${N(f.digit)} 拉下來，變成 ${N(f.val)}。`;
+      st.bring.forEach((br, i) => {
+        if (!br.zero) return;
+        const nx = st.bring[i + 1];
+        if (nx){
+          C += `${N(br.val)} 比 ${N(b)} 小，不夠除，${pl(br.col)}的商要<b>補 0</b>，再把${pl(nx.col)}的 ${N(nx.digit)} 拉下來，變成 ${N(nx.val)}。`;
+        } else {
+          C += `${N(br.val)} 比 ${N(b)} 小，不夠除，${pl(br.col)}的商<b>補 0</b>。已經沒有數字可以拉了，` +
+               (br.val === 0 ? `剛好除盡，沒有餘數。` : `${N(br.val)} 就是<b>餘數</b>。`);
+        }
+      });
+    }
+    out.push(`${A}<br>${B}<br>${C}`);
+  });
+  const ans = `<b>答：${N(`${s.a} ÷ ${b} = ${s.quotient}`)}${s.remainder ? N(` …… ${s.remainder}`) : ""}</b><br>` +
+              `驗算：${N(`${b} × ${s.quotient}${s.remainder ? ` ＋ ${s.remainder}` : ""} ＝ ${s.a}`)} ✔`;
+  return { steps: out, answer: ans };
+}
+
+/** 第 step 步要亮哪些格子：src＝正在算的數，new＝這一步寫下的數 */
+function highlightsFor(m, step){
+  const s = m.s, src = new Set(["dv"]), nw = new Set();
+  if (step === 0){
+    for (let c = 0; c < s.k; c++) src.add("d" + c);
+  } else {
+    const st = s.steps[step - 1];
+    if (step === 1){ for (let c = 0; c < s.k; c++) src.add("d" + c); }
+    else m.cells.filter(c => c.row === 2 * (step - 2) + 2).forEach(c => src.add(c.key));
+    nw.add("q" + st.col);
+    st.bring.forEach(br => { if (br.zero) nw.add("q" + br.col); src.add("d" + br.col); });
+    m.cells.filter(c => c.row === 2 * (step - 1) + 1 || c.row === 2 * (step - 1) + 2).forEach(c => nw.add(c.key));
+  }
+  return { src, nw };
+}
+
+/* ============================================================
+   畫直式
+   mode："play"＝可以填；"show"＝顯示（reveal：答案顯示到第幾步，-1＝全空）
+   ============================================================ */
+function renderGrid(m, mode, reveal = Infinity){
+  const s = m.s;
+  const g = document.createElement("div");
+  g.className = "ld";
+  g.style.gridTemplateColumns = `auto repeat(${s.n}, var(--cell))`;
+  const place = (el, row, col) => { el.style.gridRow = row; el.style.gridColumn = col; g.appendChild(el); return el; };
+  // 除數
+  const dv = document.createElement("div");
+  dv.className = "dv"; dv.dataset.key = "dv"; dv.textContent = s.b;
+  place(dv, 2, 1);
+  // 被除數
+  for (let c = 0; c < s.n; c++){
+    const el = document.createElement("div");
+    el.className = "c dd" + (c === 0 ? " first" : "");
+    el.dataset.key = "d" + c; el.textContent = s.D[c];
+    place(el, 2, c + 2);
+  }
+  // 商與往下的每一列
+  m.cells.forEach(cell => {
+    const el = document.createElement("div");
+    el.className = "c" + (cell.prod ? " pr" : "");
+    el.dataset.key = cell.key;
+    if (!cell.blank){
+      el.textContent = cell.digit;
+    } else if (mode === "play"){
+      const inp = document.createElement("input");
+      inp.className = "box"; inp.type = "text"; inp.inputMode = "numeric";
+      inp.maxLength = 1; inp.autocomplete = "off"; inp.setAttribute("enterkeyhint", "next");
+      inp.setAttribute("aria-label", "填入數字");
+      cell.input = inp;
+      el.appendChild(inp);
+    } else {
+      const sp = document.createElement("span");
+      sp.className = "box" + (cell.step <= reveal ? " ans" : "");
+      sp.textContent = cell.step <= reveal ? cell.digit : "";
+      el.appendChild(sp);
+    }
+    place(el, cell.row === 0 ? 1 : cell.row + 2, cell.col + 2);
+  });
+  return g;
+}
+
+/* ============================================================
+   狀態
+   ============================================================ */
+const $ = id => document.getElementById(id);
+const STORE = "long-division-progress-v1";
+let progress = {};
+try { progress = JSON.parse(localStorage.getItem(STORE) || "{}") || {}; } catch(e){ progress = {}; }
+function saveProgress(){ try { localStorage.setItem(STORE, JSON.stringify(progress)); } catch(e){} }
+
+let curLevel = 1;
+const sets = {};   // sets[level] = { random:bool, items:[{no, label, m, solved}] }
+
+function shuffle(arr){ for (let i = arr.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+const rint = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+
+function originalSet(lv){
+  return { random: false, items: lv.probs.map(p => ({ no: p.no, a: p.a, b: p.b, m: buildModel(p.a, p.b, p.q, p.r), solved: false })) };
+}
+function randomPair(lv){
+  for (let t = 0; t < 500; t++){
+    const b = rint(lv.dvs[0], lv.dvs[1]);
+    if (lv.no >= 4 && b % 10 === 0) continue;
+    if (lv.no <= 3 && b === 2 && Math.random() < .6) continue;
+    const a = rint(lv.dvd[0], lv.dvd[1]);
+    if (Math.floor(a / b) < 2) continue;
+    return { a, b };
+  }
+  return { a: lv.probs[0].a, b: lv.probs[0].b };
+}
+function randomSet(lv){
+  const used = new Set(), items = [];
+  while (items.length < 5){
+    let p = randomPair(lv);
+    // 第 2、3 級：至少一題的商中間有 0（這兩級的重點）
+    if ((lv.no === 2 || lv.no === 3) && items.length === 4 && !items.some(it => String(it.m.s.quotient).includes("0"))){
+      for (let t = 0; t < 400 && !String(Math.floor(p.a / p.b)).includes("0"); t++) p = randomPair(lv);
+    }
+    const key = p.a + "/" + p.b;
+    if (used.has(key)) continue;
+    used.add(key);
+    items.push({ no: items.length + 1, a: p.a, b: p.b, m: buildModel(p.a, p.b), solved: false });
+  }
+  return { random: true, items };
+}
+
+/* ============================================================
+   畫面
+   ============================================================ */
+function renderLevelTable(){
+  $("lvTable").innerHTML = LEVELS.map(lv =>
+    `<tr><td>第 ${lv.no} 級</td><td>${lv.name}</td><td>第 ${lv.probs[0].no}–${lv.probs[4].no} 題</td></tr>`).join("");
+}
+function renderLevels(){
+  $("levels").innerHTML = LEVELS.map(lv => {
+    const done = (progress[lv.no] || []).length;
+    const prog = done >= 5 ? "🏅 全部完成" : done ? `⭐ ${done}／5` : "";
+    return `<button class="lv${lv.no === curLevel ? " on" : ""}" type="button" data-lv="${lv.no}" aria-pressed="${lv.no === curLevel}">
+      <b>第 ${lv.no} 級</b><small>${lv.name}</small><span class="prog">${prog}</span></button>`;
+  }).join("");
+}
+function updateScore(){
+  const set = sets[curLevel];
+  const ok = set.items.filter(it => it.solved).length;
+  $("score").textContent = `對了 ${ok}／${set.items.length}`;
+}
+
+function renderLevel(){
+  const lv = LEVELS[curLevel - 1];
+  if (!sets[curLevel]) sets[curLevel] = originalSet(lv);
+  const set = sets[curLevel];
+  $("lvTitle").innerHTML = `第 ${lv.no} 級<small>${lv.name}</small>${set.random ? '<span class="setnote">🎲 新題目</span>' : ""}`;
+  $("btnOrig").hidden = !set.random;
+  $("btnNew").textContent = set.random ? "🎲 再換一組" : "🎲 換一組新題目";
+  const box = $("probs");
+  box.innerHTML = "";
+  set.items.forEach(it => box.appendChild(renderCard(it, set)));
+  const tip = document.createElement("div");
+  tip.className = "tipcard";
+  tip.innerHTML = `<h3>💡 這一級的重點</h3><p>${lv.tip}</p>`;
+  box.appendChild(tip);
+  updateScore();
+  renderLevels();
+}
+
+function renderCard(it, set){
+  const m = it.m;
+  const card = document.createElement("article");
+  card.className = "prob";
+  const label = set.random ? `🎲${it.no}` : `${it.no}.`;
+  card.innerHTML = `<header><span class="no">${label}</span><span class="eq">${it.a} ÷ ${it.b}</span><span class="star"></span></header>
+    <div class="gridwrap"></div><p class="msg" aria-live="polite"></p>
+    <div class="actions"><button class="btn check" type="button">檢查</button><button class="btn detail" type="button">看詳解</button><button class="btn reset" type="button" title="清空重寫" aria-label="清空重寫">↺</button></div>`;
+  const grid = renderGrid(m, "play");
+  card.querySelector(".gridwrap").appendChild(grid);
+  const msg = card.querySelector(".msg");
+  const inputs = m.blanks.map(c => c.input);
+
+  inputs.forEach((inp, i) => {
+    inp.addEventListener("input", () => {
+      const d = inp.value.replace(/\D/g, "").slice(-1);
+      inp.value = d;
+      inp.classList.remove("ok", "bad", "ask");
+      if (d && i < inputs.length - 1) inputs[i + 1].focus();
+    });
+    inp.addEventListener("keydown", e => {
+      if (e.key === "Backspace" && !inp.value && i > 0){ e.preventDefault(); inputs[i - 1].focus(); inputs[i - 1].select(); }
+      else if (e.key === "Enter"){ e.preventDefault(); check(); }
+      else if (e.key === "ArrowRight" && i < inputs.length - 1){ e.preventDefault(); inputs[i + 1].focus(); }
+      else if (e.key === "ArrowLeft" && i > 0){ e.preventDefault(); inputs[i - 1].focus(); }
+    });
+    inp.addEventListener("focus", () => inp.select());
+  });
+
+  function setSolved(v){
+    it.solved = v;
+    card.classList.toggle("solved", v);
+    card.querySelector(".star").textContent = v ? "⭐" : "";
+    inputs.forEach(x => x.readOnly = v);
+  }
+
+  function check(){
+    const empty = inputs.filter(x => !x.value).length;
+    if (empty){
+      msg.className = "msg warn"; msg.textContent = `還有 ${empty} 格沒填喔！`;
+      inputs.find(x => !x.value).focus();
+      return;
+    }
+    let wrong = 0;
+    m.blanks.forEach(c => {
+      const ok = +c.input.value === c.digit;
+      c.input.classList.remove("ok", "bad", "ask");
+      void c.input.offsetWidth;
+      c.input.classList.add(ok ? "ok" : "bad");
+      if (!ok) wrong++;
+    });
+    if (wrong){
+      msg.className = "msg bad"; msg.textContent = `有 ${wrong} 格不對，紅色的再想想看 💪`;
+      return;
+    }
+    setSolved(true);
+    const ask = m.blanks[Math.floor(Math.random() * m.blanks.length)];
+    ask.input.classList.add("ask");
+    msg.className = "msg good";
+    msg.innerHTML = `全對！🎉 說說看：閃黃光的那一格為什麼是 ${ask.digit}？`;
+    chime();
+    if (!set.random){
+      const list = progress[curLevel] || (progress[curLevel] = []);
+      if (!list.includes(it.no)) list.push(it.no);
+      saveProgress();
+    }
+    updateScore(); renderLevels();
+  }
+
+  card.querySelector(".check").addEventListener("click", check);
+  card.querySelector(".detail").addEventListener("click", () => openDetail(it, set));
+  card.querySelector(".reset").addEventListener("click", () => {
+    inputs.forEach(x => { x.value = ""; x.classList.remove("ok", "bad", "ask"); });
+    setSolved(false); msg.textContent = ""; msg.className = "msg";
+    updateScore();
+    inputs[0] && inputs[0].focus();
+  });
+  if (it.solved){
+    m.blanks.forEach(c => { c.input.value = c.digit; c.input.classList.add("ok"); });
+    setSolved(true);
+    msg.className = "msg good"; msg.textContent = "全對！🎉";
+  }
+  return card;
+}
+
+/* ---------- 詳解視窗 ---------- */
+const dlg = $("dlg");
+let dlgState = null;
+function openDetail(it, set){
+  const ex = explain(it.m.s);
+  dlgState = { it, ex, step: 0, max: ex.steps.length - 1 };
+  $("dlgTitle").innerHTML = `${set.random ? "🎲 新題 " + it.no : "第 " + it.no + " 題"} 詳解<span>${it.a} ÷ ${it.b}</span>`;
+  $("dlgSteps").innerHTML = ex.steps.map(h => `<li>${h}</li>`).join("");
+  $("dlgAns").innerHTML = ex.answer;
+  drawDetail();
+  if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
+  $("dlgNext").focus();
+}
+function drawDetail(){
+  const { it, step, max } = dlgState;
+  const holder = $("dlgGrid");
+  holder.innerHTML = "";
+  const g = renderGrid(it.m, "show", step);
+  const hl = highlightsFor(it.m, step);
+  g.querySelectorAll("[data-key]").forEach(el => {
+    if (hl.nw.has(el.dataset.key)) el.classList.add("new");
+    else if (hl.src.has(el.dataset.key)) el.classList.add("src");
+  });
+  holder.appendChild(g);
+  [...$("dlgSteps").children].forEach((li, i) => {
+    li.classList.toggle("cur", i === step);
+    li.classList.toggle("later", i > step);
+  });
+  $("dlgAns").hidden = step < max;
+  $("dlgNo").textContent = `${step + 1} / ${max + 1}`;
+  $("dlgPrev").disabled = step === 0;
+  $("dlgNext").disabled = step === max;
+  const li = $("dlgSteps").children[step];
+  if (li) li.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  if (step === max) $("dlgAns").scrollIntoView({ block: "nearest", behavior: "smooth" });
+}
+$("dlgPrev").addEventListener("click", () => { if (dlgState.step > 0){ dlgState.step--; drawDetail(); } });
+$("dlgNext").addEventListener("click", () => { if (dlgState.step < dlgState.max){ dlgState.step++; drawDetail(); } });
+$("dlgAll").addEventListener("click", () => { dlgState.step = dlgState.max; drawDetail(); });
+$("dlgX").addEventListener("click", () => dlg.close());
+dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+dlg.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight") $("dlgNext").click();
+  if (e.key === "ArrowLeft") $("dlgPrev").click();
+});
+
+/* ---------- 列印 ---------- */
+function printSet(kind){
+  const lv = LEVELS[curLevel - 1], set = sets[curLevel];
+  const area = $("printArea");
+  area.innerHTML = "";
+  const page = document.createElement("div");
+  page.className = "pp";
+  const tag = set.random ? "（新題目）" : "";
+  const lab = it => set.random ? `${it.no}.` : `${it.no}.`;
+  if (kind === "ws"){
+    page.innerHTML = `<div class="ph"><h1>第 ${lv.no} 級<small>${lv.name}${tag}</small></h1>
+      <div class="fill">姓名：＿＿＿＿＿＿　日期：＿＿＿＿＿　對了：＿＿／5</div></div>
+      <p class="pinst">在 □ 裡填入正確的數字。</p><div class="pgrid"></div>`;
+    const pg = page.querySelector(".pgrid");
+    const tall = set.items.some(it => it.m.s.rows.length + 2 > 8);
+    pg.style.gridTemplateColumns = `repeat(${tall ? 3 : 2}, 1fr)`;
+    set.items.forEach(it => {
+      const c = document.createElement("div");
+      c.className = "pcard";
+      c.innerHTML = `<div class="t"><b>${lab(it)}</b> ${it.a} ÷ ${it.b}</div><div class="gridwrap"></div>`;
+      c.querySelector(".gridwrap").appendChild(renderGrid(it.m, "show", -1));
+      pg.appendChild(c);
+    });
+    const tip = document.createElement("div");
+    tip.className = "ptip";
+    tip.innerHTML = `<h3>💡 這一級的重點</h3><p>${lv.tip}</p>`;
+    pg.appendChild(tip);
+  } else {
+    page.innerHTML = `<div class="ph"><h1>詳解　第 ${lv.no} 級<small>${lv.name}${tag}</small></h1></div>`;
+    set.items.forEach(it => {
+      const ex = explain(it.m.s);
+      const d = document.createElement("div");
+      d.className = "pd";
+      d.innerHTML = `<div><div class="t"><b>${lab(it)}</b> ${it.a} ÷ ${it.b}</div><div class="gridwrap"></div></div>
+        <div><ol>${ex.steps.map(h => `<li>${h}</li>`).join("")}</ol><div class="answer">${ex.answer}</div></div>`;
+      d.querySelector(".gridwrap").appendChild(renderGrid(it.m, "show", Infinity));
+      page.appendChild(d);
+    });
+  }
+  const foot = document.createElement("div");
+  foot.className = "pfoot";
+  foot.textContent = "媽媽好忙。媽媽好嗎？｜直式除法挖洞題 jinshuanyu.github.io/long-division";
+  page.appendChild(foot);
+  area.appendChild(page);
+  setTimeout(() => window.print(), 50);
+}
+window.addEventListener("afterprint", () => { $("printArea").innerHTML = ""; });
+
+/* ---------- 小音效（全對時） ---------- */
+let actx = null;
+function chime(){
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    [523.25, 659.25, 783.99].forEach((f, i) => {
+      const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime + i * 0.11;
+      o.type = "sine"; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.18, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+      o.connect(g).connect(actx.destination); o.start(t); o.stop(t + 0.4);
+    });
+  } catch(e){}
+}
+
+/* ---------- 事件 ---------- */
+$("levels").addEventListener("click", e => {
+  const b = e.target.closest(".lv"); if (!b) return;
+  curLevel = +b.dataset.lv;
+  try { history.replaceState(null, "", "#level" + curLevel); } catch(err){}
+  renderLevel();
+});
+$("btnNew").addEventListener("click", () => { sets[curLevel] = randomSet(LEVELS[curLevel - 1]); renderLevel(); });
+$("btnOrig").addEventListener("click", () => { sets[curLevel] = originalSet(LEVELS[curLevel - 1]); renderLevel(); });
+$("btnClear").addEventListener("click", () => {
+  const set = sets[curLevel];
+  set.items.forEach(it => it.solved = false);
+  renderLevel();
+});
+$("btnPrintWs").addEventListener("click", () => printSet("ws"));
+$("btnPrintAns").addEventListener("click", () => printSet("ans"));
+
+/* ---------- 開始 ---------- */
+(function init(){
+  const h = location.hash.match(/level([1-6])/);
+  if (h) curLevel = +h[1];
+  try { if (!localStorage.getItem(STORE)) $("intro").open = true; } catch(e){ $("intro").open = true; }
+  renderLevelTable();
+  renderLevel();
+})();
+</script>
+</body>
+</html>
