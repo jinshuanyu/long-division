@@ -64,17 +64,17 @@
   .lv.on .prog{color:#fff7c2}
 
   /* ---- 級數頁 ---- */
-  .lvhead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.6rem;border-bottom:2.5px solid #334155;padding-bottom:.45rem;margin-bottom:.7rem}
+  .lvhead{display:flex;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:.6rem;border-bottom:2.5px solid #334155;padding-bottom:.45rem;margin-bottom:.7rem}
   .lvhead h2{margin:0;font-size:1.55rem;font-weight:900}
   .lvhead h2 small{font-size:.95rem;font-weight:700;color:var(--c-muted);margin-left:.5rem;font-family:var(--num)}
-  .score{font-weight:900;color:var(--c-primary-deep);background:var(--c-soft);border-radius:999px;padding:.15rem .9rem}
+  .lvhead h2{min-width:0;white-space:nowrap}
+  .score{flex-shrink:0;white-space:nowrap;font-weight:900;color:var(--c-primary-deep);background:var(--c-soft);border-radius:999px;padding:.15rem .9rem}
   .toolbar{display:flex;flex-wrap:wrap;gap:.5rem;margin:.2rem 0 .7rem}
   .tb{border:2px solid var(--c-border);background:#fff;border-radius:999px;padding:.3rem .9rem;font-weight:700;font-size:.92rem;color:#334155;cursor:pointer;transition:all .15s}
   .tb:hover{border-color:var(--c-primary);color:var(--c-primary-deep)}
   .tb.main{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
   .tb.main:hover{background:var(--c-primary-deep);color:#fff}
   .hint{margin:0 0 .8rem;color:#475569;font-size:.95rem}
-  .setnote{display:inline-block;font-size:.8rem;font-weight:700;color:#7c3aed;background:#f3e8ff;border-radius:999px;padding:.05rem .65rem;margin-left:.4rem;vertical-align:middle}
 
   .probs{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:1rem}
   .prob{border:1.5px solid #cbd5e1;border-radius:16px;padding:.7rem .9rem .8rem;display:flex;flex-direction:column;background:#fff;transition:border-color .2s,box-shadow .2s}
@@ -108,7 +108,9 @@
   .ld .new{background:var(--new)}
   .box{width:calc(var(--cell) - 6px);height:calc(var(--cell) - 6px);border:2px solid #94a3b8;border-radius:8px;text-align:center;font:inherit;padding:0;margin:0;background:#fff;color:var(--c-text);display:inline-flex;align-items:center;justify-content:center;-moz-appearance:textfield;appearance:none}
   input.box{caret-color:var(--c-primary)}
-  input.box:focus{outline:none;border-color:var(--c-primary);box-shadow:0 0 0 3px rgba(47,127,209,.28)}
+  input.box.next{border-color:var(--c-primary);background:#e3eefb;animation:nextglow 1.4s ease-in-out infinite}
+  @keyframes nextglow{0%,100%{box-shadow:0 0 0 0 rgba(47,127,209,0)}50%{box-shadow:0 0 0 5px rgba(47,127,209,.35)}}
+  input.box:focus{animation:none;outline:none;border-color:var(--c-primary);box-shadow:0 0 0 3px rgba(47,127,209,.28)}
   .box.ok{border-color:var(--ok);background:var(--ok-soft);color:#166534}
   .box.bad{border-color:var(--bad);background:var(--bad-soft);color:#991b1b;animation:shake .35s}
   .box.ans{color:var(--ans);font-weight:700;border-color:#94a3b8}
@@ -167,6 +169,9 @@
   @media (max-width:640px){
     .levels{grid-template-columns:repeat(2,1fr)}
     .lv b{white-space:nowrap}
+    .toolbar{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem}
+    .toolbar .tb{padding:.35rem .2rem;font-size:.84rem;white-space:nowrap}
+    .toolbar .tb.main{grid-column:1 / -1}
     body{padding:0}
     .container{border-radius:0;box-shadow:none}
     .inner{padding:1.1rem 16px 2rem}
@@ -174,7 +179,9 @@
     .hero h1{font-size:1.65rem}
     .probs{grid-template-columns:1fr}
     :root{--cell:2.5rem}
-    .lvhead h2{font-size:1.3rem}
+    .lvhead h2{font-size:1.2rem}
+    .lvhead h2 small{font-size:.82rem;margin-left:.35rem}
+    .score{padding:.1rem .7rem;font-size:.92rem}
     dialog#dlg{width:100vw;max-width:100vw;max-height:94vh;border-radius:18px 18px 0 0;margin:auto 0 0}
     dialog#dlg .ld{--cell:1.85rem;font-size:1.1rem}
     dialog#dlg .legend{font-size:.72rem;gap:.5rem}
@@ -260,7 +267,6 @@
       </div>
       <div class="toolbar">
         <button class="tb main" type="button" id="btnNew">🎲 換一組新題目</button>
-        <button class="tb" type="button" id="btnOrig" hidden>📘 回到原本的題目</button>
         <button class="tb" type="button" id="btnPrintWs">🖨️ 列印學習單</button>
         <button class="tb" type="button" id="btnPrintAns">🖨️ 列印詳解</button>
         <button class="tb" type="button" id="btnClear">🧹 全部清空</button>
@@ -680,12 +686,14 @@ function renderLevel(){
   const lv = LEVELS[curLevel - 1];
   if (!sets[curLevel]) sets[curLevel] = originalSet(lv);
   const set = sets[curLevel];
-  $("lvTitle").innerHTML = `第 ${lv.no} 級<small>${lv.name}</small>${set.random ? '<span class="setnote">🎲 新題目</span>' : ""}`;
-  $("btnOrig").hidden = !set.random;
-  $("btnNew").textContent = set.random ? "🎲 再換一組" : "🎲 換一組新題目";
+  $("lvTitle").innerHTML = `第 ${lv.no} 級<small>${lv.name}</small>`;
   const box = $("probs");
   box.innerHTML = "";
-  set.items.forEach(it => box.appendChild(renderCard(it, set)));
+  const cards = set.items.map(it => box.appendChild(renderCard(it, set)));
+  if (window.matchMedia && matchMedia("(hover:hover) and (pointer:fine)").matches){
+    const c = cards.find((_, i) => !set.items[i].solved);
+    if (c) setTimeout(() => c.focusFirst(), 0);
+  }
   $("lvTip").innerHTML = `<h3>💡 這一級的重點</h3><p>${lv.tip}</p>`;
   updateScore();
   renderLevels();
@@ -703,12 +711,21 @@ function renderCard(it, set){
   card.querySelector(".gridwrap").appendChild(grid);
   const msg = card.querySelector(".msg");
   const inputs = m.blanks.map(c => c.input);
+  /* 下一格要填的格子發亮（照計算順序） */
+  function markNext(){
+    inputs.forEach(x => x.classList.remove("next"));
+    if (it.solved) return;
+    const nx = inputs.find(x => !x.value);
+    if (nx) nx.classList.add("next");
+  }
+  card.focusFirst = () => { const nx = inputs.find(x => !x.value); if (nx) nx.focus({ preventScroll: true }); };
 
   inputs.forEach((inp, i) => {
     inp.addEventListener("input", () => {
       const d = inp.value.replace(/\D/g, "").slice(-1);
       inp.value = d;
       inp.classList.remove("ok", "bad", "ask");
+      markNext();
       if (d && i < inputs.length - 1) inputs[i + 1].focus();
     });
     inp.addEventListener("keydown", e => {
@@ -725,6 +742,7 @@ function renderCard(it, set){
     card.classList.toggle("solved", v);
     card.querySelector(".star").textContent = v ? "⭐" : "";
     inputs.forEach(x => x.readOnly = v);
+    markNext();
   }
 
   function check(){
@@ -773,6 +791,7 @@ function renderCard(it, set){
     setSolved(true);
     msg.className = "msg good"; msg.textContent = "全對！🎉";
   }
+  markNext();
   return card;
 }
 
@@ -892,7 +911,6 @@ $("levels").addEventListener("click", e => {
   renderLevel();
 });
 $("btnNew").addEventListener("click", () => { sets[curLevel] = randomSet(LEVELS[curLevel - 1]); renderLevel(); });
-$("btnOrig").addEventListener("click", () => { sets[curLevel] = originalSet(LEVELS[curLevel - 1]); renderLevel(); });
 $("btnClear").addEventListener("click", () => {
   const set = sets[curLevel];
   set.items.forEach(it => it.solved = false);
