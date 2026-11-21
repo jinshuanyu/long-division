@@ -28,7 +28,7 @@
 
   /* ---- 標題區 ---- */
   .hero{position:relative;padding:2.6rem 1.6rem 2rem;text-align:center;color:#fff;
-    background:linear-gradient(135deg,#1f6bbd 0%,#2f7fd1 55%,#73b1ef 100%);overflow:hidden}
+    background:linear-gradient(135deg,#55779c 0%,#6e8fb3 55%,#9db5cf 100%);overflow:hidden}
   .hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.09)}
   .hero::before{width:260px;height:260px;right:-80px;top:-120px}
   .hero::after{width:180px;height:180px;left:-60px;bottom:-100px}
@@ -57,9 +57,9 @@
   .lv{border:2px solid var(--c-border);background:#fff;border-radius:14px;padding:.55rem .3rem .5rem;cursor:pointer;color:inherit;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.05rem;transition:border-color .15s,transform .1s}
   .lv:hover{border-color:var(--c-primary);transform:translateY(-2px)}
   .lv b{font-size:1.05rem;font-weight:900}
-  .lv small{font-size:.78rem;color:var(--c-muted);line-height:1.35;font-family:var(--num)}
+  .lv small{font-size:.78rem;color:var(--c-muted);line-height:1.35;font-family:var(--num);white-space:nowrap}
   .lv .prog{font-size:.75rem;font-weight:700;color:#b45309;min-height:1.2em}
-  .lv.on{background:linear-gradient(145deg,#2f7fd1,#73b1ef);color:#fff;border-color:transparent;box-shadow:0 8px 18px -8px #2f7fd1}
+  .lv.on{background:linear-gradient(145deg,#5f82a8,#8faac8);color:#fff;border-color:transparent;box-shadow:0 8px 18px -8px #5f82a8}
   .lv.on small{color:rgba(255,255,255,.92)}
   .lv.on .prog{color:#fff7c2}
 
@@ -93,9 +93,9 @@
   .btn.detail{background:#fef3c7;color:#92400e}
   .btn.reset{background:#f1f5f9;color:#475569}
 
-  .tipcard{border:1.5px dashed #94a3b8;border-radius:16px;padding:.8rem 1rem;background:#f8fafc}
-  .tipcard h3{margin:0 0 .4rem;font-size:1.05rem}
-  .tipcard p{margin:0;font-size:.95rem;line-height:1.75}
+  .tipcard{border:1.5px dashed #e0b85a;border-radius:16px;padding:.75rem 1.1rem;background:#fffbeb;margin:0 0 .9rem}
+  .tipcard h3{margin:0 0 .3rem;font-size:1.05rem;color:#92400e}
+  .tipcard p{margin:0;font-size:.98rem;line-height:1.8}
 
   /* ---- 直式 ---- */
   .ld{display:inline-grid;grid-auto-rows:var(--cell);align-items:center;font-family:var(--num);font-size:1.38rem;line-height:1;column-gap:0;font-variant-numeric:tabular-nums}
@@ -165,6 +165,8 @@
     .dlg-grid{position:sticky;top:-1rem;background:#fff;z-index:2;padding:.4rem 0 .5rem;margin:-1rem 0 0;border-bottom:1.5px solid var(--c-border)}
   }
   @media (max-width:640px){
+    .levels{grid-template-columns:repeat(2,1fr)}
+    .lv b{white-space:nowrap}
     body{padding:0}
     .container{border-radius:0;box-shadow:none}
     .inner{padding:1.1rem 16px 2rem}
@@ -263,6 +265,7 @@
         <button class="tb" type="button" id="btnPrintAns">🖨️ 列印詳解</button>
         <button class="tb" type="button" id="btnClear">🧹 全部清空</button>
       </div>
+      <div class="tipcard" id="lvTip"></div>
       <p class="hint">在 □ 裡填入正確的數字，填完按「檢查」。手機上點一下格子就會跳出數字鍵盤，填好會自動跳到下一格。</p>
       <div class="probs" id="probs"></div>
     </section>
@@ -683,10 +686,7 @@ function renderLevel(){
   const box = $("probs");
   box.innerHTML = "";
   set.items.forEach(it => box.appendChild(renderCard(it, set)));
-  const tip = document.createElement("div");
-  tip.className = "tipcard";
-  tip.innerHTML = `<h3>💡 這一級的重點</h3><p>${lv.tip}</p>`;
-  box.appendChild(tip);
+  $("lvTip").innerHTML = `<h3>💡 這一級的重點</h3><p>${lv.tip}</p>`;
   updateScore();
   renderLevels();
 }
