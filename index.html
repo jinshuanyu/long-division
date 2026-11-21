@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>直式除法挖洞題｜媽媽好忙。媽媽好嗎？</title>
-<meta name="description" content="從兩位數 ÷ 一位數到四位數 ÷ 三位數，6 級 30 題直式除法挖洞題。填出商、乘出來的數和相減後的數，附一步一步的詳解，可列印學習單。" />
+<meta name="description" content="6 種難度的直式除法挖洞題，從兩位數 ÷ 一位數到四位數 ÷ 三位數，可以一直換新題目。填出商、乘出來的數和相減後的數，附一步一步的詳解，可列印學習單。" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>➗</text></svg>" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -58,10 +58,8 @@
   .lv:hover{border-color:var(--c-primary);transform:translateY(-2px)}
   .lv b{font-size:1.05rem;font-weight:900}
   .lv small{font-size:.78rem;color:var(--c-muted);line-height:1.35;font-family:var(--num);white-space:nowrap}
-  .lv .prog{font-size:.75rem;font-weight:700;color:#b45309;min-height:1.2em}
   .lv.on{background:linear-gradient(145deg,#5f82a8,#8faac8);color:#fff;border-color:transparent;box-shadow:0 8px 18px -8px #5f82a8}
   .lv.on small{color:rgba(255,255,255,.92)}
-  .lv.on .prog{color:#fff7c2}
 
   /* ---- 級數頁 ---- */
   .lvhead{display:flex;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:.6rem;border-bottom:2.5px solid #334155;padding-bottom:.45rem;margin-bottom:.7rem}
@@ -236,7 +234,7 @@
     <a class="hero-back" href="https://jinshuanyu.github.io/">← 全部工具</a>
     <span class="eyebrow">媽媽好忙。媽媽好嗎？</span>
     <h1>直式除法挖洞題</h1>
-    <p class="lead">從兩位數 ÷ 一位數，一路進階到四位數 ÷ 三位數，共 6 級 30 題</p>
+    <p class="lead">6 種難度的直式除法題<br>兩位數 ÷ 一位數 ➡️ 四位數 ÷ 三位數</p>
   </header>
 
   <div class="inner">
@@ -620,10 +618,6 @@ function renderGrid(m, mode, reveal = Infinity){
    狀態
    ============================================================ */
 const $ = id => document.getElementById(id);
-const STORE = "long-division-progress-v1";
-let progress = {};
-try { progress = JSON.parse(localStorage.getItem(STORE) || "{}") || {}; } catch(e){ progress = {}; }
-function saveProgress(){ try { localStorage.setItem(STORE, JSON.stringify(progress)); } catch(e){} }
 
 let curLevel = 1;
 const sets = {};   // sets[level] = { random:bool, items:[{no, label, m, solved}] }
@@ -670,10 +664,8 @@ function renderLevelTable(){
 }
 function renderLevels(){
   $("levels").innerHTML = LEVELS.map(lv => {
-    const done = (progress[lv.no] || []).length;
-    const prog = done >= 5 ? "🏅 全部完成" : done ? `⭐ ${done}／5` : "";
     return `<button class="lv${lv.no === curLevel ? " on" : ""}" type="button" data-lv="${lv.no}" aria-pressed="${lv.no === curLevel}">
-      <b>第 ${lv.no} 級</b><small>${lv.name}</small><span class="prog">${prog}</span></button>`;
+      <b>第 ${lv.no} 級</b><small>${lv.name}</small></button>`;
   }).join("");
 }
 function updateScore(){
@@ -770,11 +762,6 @@ function renderCard(it, set){
     msg.className = "msg good";
     msg.innerHTML = `全對！🎉 說說看：閃黃光的那一格為什麼是 ${ask.digit}？`;
     chime();
-    if (!set.random){
-      const list = progress[curLevel] || (progress[curLevel] = []);
-      if (!list.includes(it.no)) list.push(it.no);
-      saveProgress();
-    }
     updateScore(); renderLevels();
   }
 
@@ -923,7 +910,11 @@ $("btnPrintAns").addEventListener("click", () => printSet("ans"));
 (function init(){
   const h = location.hash.match(/level([1-6])/);
   if (h) curLevel = +h[1];
-  try { if (!localStorage.getItem(STORE)) $("intro").open = true; } catch(e){ $("intro").open = true; }
+  /* 第一次來才自動打開說明；順便清掉舊版的進度紀錄 */
+  try {
+    localStorage.removeItem("long-division-progress-v1");
+    if (!localStorage.getItem("long-division-seen")){ $("intro").open = true; localStorage.setItem("long-division-seen", "1"); }
+  } catch(e){ $("intro").open = true; }
   renderLevelTable();
   renderLevel();
 })();
