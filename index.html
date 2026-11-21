@@ -910,11 +910,8 @@ $("btnPrintAns").addEventListener("click", () => printSet("ans"));
 (function init(){
   const h = location.hash.match(/level([1-6])/);
   if (h) curLevel = +h[1];
-  /* 第一次來才自動打開說明；順便清掉舊版的進度紀錄 */
-  try {
-    localStorage.removeItem("long-division-progress-v1");
-    if (!localStorage.getItem("long-division-seen")){ $("intro").open = true; localStorage.setItem("long-division-seen", "1"); }
-  } catch(e){ $("intro").open = true; }
+  /* 說明預設折疊；順便清掉舊版留下的紀錄 */
+  try { localStorage.removeItem("long-division-progress-v1"); localStorage.removeItem("long-division-seen"); } catch(e){}
   renderLevelTable();
   renderLevel();
 })();
